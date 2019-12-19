@@ -1,8 +1,8 @@
 const router = require('express').Router();
 
-const companyRouter = require('../router/companyRouter');
+const PicklesRouter = require('../router/PicklesRouter');
 
-router.use('/api', companyRouter);
+router.use('/api', PicklesRouter);
 
 // Global test endpoint
 router.get('/', (req, res) => {
