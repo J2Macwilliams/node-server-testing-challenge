@@ -35,12 +35,12 @@ module.exports = {
   },
   
 
-  production: {
-    client: 'pg',
-    connection: process.env.,
-    migrations: {
-      directory: "./data/migrations",
-    }
-  }
+  // production: {
+  //   client: 'pg',
+  //   connection: process.env.,
+  //   migrations: {
+  //     directory: "./data/migrations",
+  //   }
+  // }
 
 };
