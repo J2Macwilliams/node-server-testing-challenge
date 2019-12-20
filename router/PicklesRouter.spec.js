@@ -2,6 +2,7 @@ const request = require('supertest');
 
 const server = require('../api/server');
 
+const db = require('../data/dbConfig');
 
 describe('PickleRouter.js', function() {
 	// environment test---------------------------------------
@@ -10,51 +11,54 @@ describe('PickleRouter.js', function() {
 			expect(process.env.DB_ENV).toBe('testing');
 		});
 	});
+
 	//POST test for JSON -------------------------------------
 	describe('POST /', function() {
-		it('should return a JSON', function() {
-			return request(server)
-				.post('/')
-				.then(res => {
-					expect(res.type).toMatch(/json/i);
-				});
+		beforeEach(async function() {
+			await db('pickles').truncate();
 		});
-		// POST test for status code and OBJECT----------------------
-		it('should return status code and posted Object', function() {
-			return request(server)
-				.post('/')
-				.send('name = spicy pickle')
-				.expect(function(res) {
-					res.body.id = 'some fixed id';
-					res.body.name = res.body.name.toLowerCase();
-				})
-				.expect(
-					201,
-					{
-						id: 'some fixed id',
-						name: 'spicy pickle'
-					},
-					done
-				);
-		});
-		describe('DELETE /:id', function() {
-			it('should return with an object by id', function() {
-				const id = req.params.id;
+		describe('add pickle', function() {
+			it('should return a 201 ok', function() {
 				return request(server)
-					.delete(`/${id}`)
-					.getBy(id)
+					.post('/api/')
+					.send({ name: 'Green Beans', description: 'with chile flakes' })
 					.then(res => {
-						expect(id).toBe(res.id);
+						expect(res.status).toBe(201);
 					});
 			});
-			it('should return with a JSON', function() {
-				const id = req.params.id;
+		});
+		describe('add pickle', function() {
+			it('should return a json', function() {
 				return request(server)
-					.delete(`/${id}`)
+					.post('/api/')
+					.send({ name: 'cauliflower' })
 					.then(res => {
 						expect(res.type).toMatch(/json/i);
 					});
 			});
+		});
+	});
+
+	describe('DELETE /:id', function() {
+		beforeEach(async function() {
+			await db('pickles').truncate();
+		});
+
+		it('should return a 200 ok', async function() {
+			const id = 1;
+
+			return request(server)
+				.delete(`/api/${id}`)
+				.expect(200);
+		});
+		it('should return a json', async function() {
+			const id = 2;
+
+			return request(server)
+				.delete(`/api/${id}`)
+				.then(res => {
+					expect(res.type).toMatch(/json/i);
+				});
 		});
 	});
 });

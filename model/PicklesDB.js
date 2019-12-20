@@ -19,9 +19,7 @@ return db('pickles')
 function add(post) {
 return db('pickles')
 .insert(post)
-.then(ids => {
-return getById(ids[0]);
-});
+.returning('id');
 }
 
 function remove(id) {
